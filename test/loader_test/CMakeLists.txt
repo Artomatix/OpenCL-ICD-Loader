@@ -12,5 +12,4 @@ add_executable (icd_loader_test
     test_clgl.c
     test_image_objects.c )
 
-find_package(Threads REQUIRED)
-target_link_libraries(icd_loader_test OpenCL IcdLog Threads::Threads)
+target_link_libraries(icd_loader_test OpenCL IcdLog)
