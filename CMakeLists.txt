@@ -1,6 +1,9 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.1)
 
 project(OpenCL VERSION 2.1)
+
+option(BUILD_SHARED_LIBS "Build shared libs" ON)
+option(OPENCL_TESTS "Enable building tests" ON)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -26,7 +29,7 @@ endif()
 include_directories("${CMAKE_CURRENT_LIST_DIR}/include")
 
 
-add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
+add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "2.1" SOVERSION "1")
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
@@ -76,3 +79,8 @@ install(
     NAMESPACE "${namespace}"
     DESTINATION "${config_install_dir}"
 )
+
+if(OPENCL_TESTS)
+    enable_testing()
+    add_subdirectory(test)
+endif ()
