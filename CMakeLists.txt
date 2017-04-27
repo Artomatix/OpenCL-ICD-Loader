@@ -33,10 +33,11 @@ add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "2.1" SOVERSION "1")
 
 if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread -Wl,--version-script -Wl,${CMAKE_SOURCE_DIR}/icd_exports.map")
+    set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_SOURCE_DIR}/icd_exports.map")
 endif ()
 
-target_link_libraries (OpenCL ${CMAKE_DL_LIBS})
+find_package(Threads REQUIRED)
+target_link_libraries(OpenCL PRIVATE Threads::Threads ${CMAKE_DL_LIBS})
 
 #Installation
 set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
