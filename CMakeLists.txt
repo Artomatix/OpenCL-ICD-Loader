@@ -1,9 +1,9 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.1)
 
 project(OpenCL VERSION 2.1)
 
-option (BUILD_SHARED_LIBS "Build shared libs" ON)
-option (TESTS "Enable building tests" ON)
+option(BUILD_SHARED_LIBS "Build shared libs" ON)
+option(OPENCL_TESTS "Enable building tests" ON)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
@@ -80,7 +80,7 @@ install(
     DESTINATION "${config_install_dir}"
 )
 
-if (TESTS)
-    enable_testing ()
-    add_subdirectory (test)
+if(OPENCL_TESTS)
+    enable_testing()
+    add_subdirectory(test)
 endif ()
