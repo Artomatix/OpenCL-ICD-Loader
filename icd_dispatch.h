@@ -50,6 +50,10 @@
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #endif
 
+#ifndef CL_USE_DEPRECATED_OPENCL_2_0_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_0_APIS
+#endif
+
 // cl.h
 #include <CL/cl.h>
 
@@ -61,11 +65,6 @@
 #include <CL/cl_d3d10.h>
 #include <CL/cl_d3d11.h>
 #include <CL/cl_dx9_media_sharing.h>
-#endif
-#if !defined(__ANDROID__)
-#include <GL/gl.h>
-#else
-#include <GLES/gl.h>
 #endif
 #include <CL/cl_gl.h>
 #include <CL/cl_gl_ext.h>
@@ -322,6 +321,17 @@ typedef CL_API_ENTRY cl_program (CL_API_CALL *KHRpfn_clLinkProgram)(
     void (CL_CALLBACK *  pfn_notify)(cl_program program, void * user_data),
     void *               user_data,
     cl_int *             errcode_ret) CL_API_SUFFIX__VERSION_1_2;
+
+typedef CL_API_ENTRY cl_int (CL_API_CALL *KHRpfn_clSetProgramSpecializationConstant)(
+    cl_program           program,
+    cl_uint              spec_id,
+    size_t               spec_size,
+    const void*          spec_value) CL_API_SUFFIX__VERSION_2_2;
+
+typedef CL_API_ENTRY cl_int (CL_API_CALL *KHRpfn_clSetProgramReleaseCallback)(
+    cl_program           program,
+    void (CL_CALLBACK *  pfn_notify)(cl_program program, void * user_data),
+    void *               user_data) CL_API_SUFFIX__VERSION_2_2;
 
 typedef CL_API_ENTRY cl_int (CL_API_CALL *KHRpfn_clUnloadPlatformCompiler)(
     cl_platform_id     platform) CL_API_SUFFIX__VERSION_1_2;
@@ -786,7 +796,7 @@ typedef CL_API_ENTRY void * (CL_API_CALL *KHRpfn_clGetExtensionFunctionAddress)(
 typedef CL_API_ENTRY cl_mem (CL_API_CALL *KHRpfn_clCreateFromGLBuffer)(
     cl_context    context,
     cl_mem_flags  flags,
-    GLuint        bufobj,
+    cl_GLuint     bufobj,
     int *         errcode_ret) CL_API_SUFFIX__VERSION_1_0;
 
 typedef CL_API_ENTRY cl_mem (CL_API_CALL *KHRpfn_clCreateFromGLTexture)(
@@ -800,29 +810,29 @@ typedef CL_API_ENTRY cl_mem (CL_API_CALL *KHRpfn_clCreateFromGLTexture)(
 typedef CL_API_ENTRY cl_mem (CL_API_CALL *KHRpfn_clCreateFromGLTexture2D)(
     cl_context      context,
     cl_mem_flags    flags,
-    GLenum          target,
-    GLint           miplevel,
-    GLuint          texture,
+    cl_GLenum       target,
+    cl_GLint        miplevel,
+    cl_GLuint       texture,
     cl_int *        errcode_ret) CL_API_SUFFIX__VERSION_1_0;
 
 typedef CL_API_ENTRY cl_mem (CL_API_CALL *KHRpfn_clCreateFromGLTexture3D)(
     cl_context      context,
     cl_mem_flags    flags,
-    GLenum          target,
-    GLint           miplevel,
-    GLuint          texture,
+    cl_GLenum       target,
+    cl_GLint        miplevel,
+    cl_GLuint       texture,
     cl_int *        errcode_ret) CL_API_SUFFIX__VERSION_1_0;
 
 typedef CL_API_ENTRY cl_mem (CL_API_CALL *KHRpfn_clCreateFromGLRenderbuffer)(
     cl_context           context,
     cl_mem_flags         flags,
-    GLuint               renderbuffer,
+    cl_GLuint            renderbuffer,
     cl_int *             errcode_ret) CL_API_SUFFIX__VERSION_1_0;
 
 typedef CL_API_ENTRY cl_int (CL_API_CALL *KHRpfn_clGetGLObjectInfo)(
     cl_mem               memobj,
     cl_gl_object_type *  gl_object_type,
-    GLuint *             gl_object_name) CL_API_SUFFIX__VERSION_1_0;
+    cl_GLuint *          gl_object_name) CL_API_SUFFIX__VERSION_1_0;
                   
 typedef CL_API_ENTRY cl_int (CL_API_CALL *KHRpfn_clGetGLTextureInfo)(
     cl_mem               memobj,
@@ -1459,6 +1469,10 @@ struct KHRicdVendorDispatchRec
     KHRpfn_clGetHostTimer                           clGetHostTimer;
     KHRpfn_clGetKernelSubGroupInfo                  clGetKernelSubGroupInfo;
     KHRpfn_clSetDefaultDeviceCommandQueue           clSetDefaultDeviceCommandQueue;
+
+    /* OpenCL 2.2 */
+    KHRpfn_clSetProgramReleaseCallback              clSetProgramReleaseCallback;
+    KHRpfn_clSetProgramSpecializationConstant       clSetProgramSpecializationConstant;
 };
 
 /*

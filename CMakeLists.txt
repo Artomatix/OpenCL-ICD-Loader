@@ -6,34 +6,36 @@ option(BUILD_SHARED_LIBS "Build shared libs" ON)
 option(OPENCL_TESTS "Enable building tests" ON)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 set (OPENCL_ICD_LOADER_SOURCES icd.c icd_dispatch.c)
 
-if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_linux.c icd_exports.map)
-else ()
-    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_windows.c OpenCL.def)
+if (WIN32)
+    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_windows.c icd_windows_hkr.c OpenCL.def OpenCL.rc)
     include_directories ($ENV{DXSDK_DIR}/Include)
+else ()
+    list (APPEND OPENCL_ICD_LOADER_SOURCES icd_linux.c icd_exports.map)
 endif ()
 
-if(APPLE) #for some reason on apple opencl is expected under OpenCL. And oddly enough, still need the include/CL version for ICD to build
-    set(opencl_include_dir "${CMAKE_CURRENT_BINARY_DIR}/include")
-    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/include/CL")
-        file(COPY "${CMAKE_CURRENT_LIST_DIR}/include/CL/" DESTINATION "${opencl_include_dir}/OpenCL")
-    endif()
-    include_directories("${opencl_include_dir}")
-else()
-   set(opencl_include_dir "${CMAKE_CURRENT_LIST_DIR}/include")
-endif()
-include_directories("${CMAKE_CURRENT_LIST_DIR}/include")
+# Change this to point to a directory containing OpenCL header directory "CL"
+# OR copy OpenCL headers to ./inc/CL/
+if (NOT DEFINED OPENCL_INCLUDE_DIRS)
+    set (OPENCL_INCLUDE_DIRS ./inc)
+endif ()
 
+include_directories (${OPENCL_INCLUDE_DIRS})
 
 add_library (OpenCL ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "2.1" SOVERSION "1")
 
-if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Linux")
-    set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_SOURCE_DIR}/icd_exports.map")
+if (WIN32)
+    target_link_libraries (OpenCL cfgmgr32.lib)
+else()
+    if (APPLE)
+        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread")
+    else ()
+        set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread -Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/icd_exports.map")
+    endif ()
 endif ()
 
 find_package(Threads REQUIRED)
