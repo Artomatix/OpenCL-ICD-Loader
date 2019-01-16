@@ -70,11 +70,6 @@ install(
 )
 
 install(
-    FILES "${project_config}" "${version_config}"
-    DESTINATION "${config_install_dir}"
-)
-
-install(
     EXPORT "${targets_export_name}"
     NAMESPACE "${namespace}"
     DESTINATION "${config_install_dir}"
