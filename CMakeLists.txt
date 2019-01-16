@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.1)
 
-project (OPENCL_ICD_LOADER VERSION 2.1)
+project (OpenCL 2.1)
 
 option(BUILD_SHARED_LIBS "Build shared libs" ON)
 option(OPENCL_TESTS "Enable building tests" ON)
@@ -55,6 +55,10 @@ write_basic_package_version_file(
     "${version_config}" COMPATIBILITY SameMajorVersion
 )
 
+
+configure_file("Config.cmake.in" "${project_config}" @ONLY)
+
+
 install(
     TARGETS OpenCL
     EXPORT "${targets_export_name}"
@@ -68,6 +72,13 @@ install(
     DIRECTORY "${opencl_include_dir}/"
     DESTINATION "${include_install_dir}"
 )
+
+
+install(
+    FILES "${project_config}" "${version_config}"
+    DESTINATION "${config_install_dir}"
+)
+
 
 install(
     EXPORT "${targets_export_name}"
