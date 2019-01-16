@@ -20,10 +20,10 @@ endif ()
 # Change this to point to a directory containing OpenCL header directory "CL"
 # OR copy OpenCL headers to ./inc/CL/
 if (NOT DEFINED OPENCL_INCLUDE_DIRS)
-    set (OPENCL_INCLUDE_DIRS ./inc)
+    set(opencl_include_dir "${CMAKE_CURRENT_LIST_DIR}/include")
 endif ()
 
-include_directories (${OPENCL_INCLUDE_DIRS})
+include_directories (${opencl_include_dir})
 
 add_library (OpenCL STATIC ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "2.1" SOVERSION "1")
