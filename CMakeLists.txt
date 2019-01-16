@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.1)
 
-project (OpenCL 2.1)
+project (OpenCL VERSION 2.1)
 
 option(BUILD_SHARED_LIBS "Build shared libs" ON)
 option(OPENCL_TESTS "Enable building tests" ON)
