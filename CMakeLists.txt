@@ -29,7 +29,7 @@ add_library (OpenCL STATIC ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "2.1" SOVERSION "1")
 
 if (WIN32)
-    target_link_libraries (OpenCL cfgmgr32.lib)
+	target_link_libraries (OpenCL cfgmgr32.lib)
 else()
     if (APPLE)
         set_target_properties (OpenCL PROPERTIES LINK_FLAGS "-pthread")
@@ -55,6 +55,8 @@ write_basic_package_version_file(
     "${version_config}" COMPATIBILITY SameMajorVersion
 )
 
+find_package(Threads REQUIRED)
+target_link_libraries(OpenCL Threads::Threads ${CMAKE_DL_LIBS})
 
 configure_file("Config.cmake.in" "${project_config}" @ONLY)
 
