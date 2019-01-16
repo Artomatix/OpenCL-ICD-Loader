@@ -25,7 +25,7 @@ endif ()
 
 include_directories (${OPENCL_INCLUDE_DIRS})
 
-add_library (OpenCL SHARED ${OPENCL_ICD_LOADER_SOURCES})
+add_library (OpenCL STATIC ${OPENCL_ICD_LOADER_SOURCES})
 set_target_properties (OpenCL PROPERTIES VERSION "2.1" SOVERSION "1")
 
 if (WIN32)
